@@ -12,6 +12,10 @@ I recommend running the front-end on `PORT=4000` and backend on `PORT=3000`
 
 In the project directory, you can run:
 
+### `npm install`
+
+Installs any dependencies using npm
+
 ### `npm start`
 
 Runs the app in the development mode.\

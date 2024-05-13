@@ -50,10 +50,12 @@ function Home() {
         </form>
 
         <div>
-          <h3>Current Weather</h3>
-          {currWeather && currWeather.main && (
-            <p>Curr Weather: {currWeather.main}</p>
           
+          {currWeather && currWeather.main && (
+            <>
+            <h3>Current Weather</h3>
+            <p>Curr Weather: {currWeather.main}</p>
+            </>
           )}
         </div>
         
