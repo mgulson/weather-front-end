@@ -16,8 +16,8 @@ function Home() {
     let response = await getWeather(city, state)
     response = await response.json()
     console.log(response)
-    if(response.current && response.current.weather.length > 0){
-      setCurrWeather(response.current.weather[0])
+    if(response.current){
+      setCurrWeather(response.current)
     }
 
     if(response.daily && response.daily.length > 5){
@@ -25,6 +25,10 @@ function Home() {
     }
   }
 
+  function convertKelvin(temp) {
+    console.log(temp)
+    return ((temp - 273.15) * 9/5) + 32
+  }
 
   return (
     <>
@@ -51,10 +55,12 @@ function Home() {
 
         <div>
           
-          {currWeather && currWeather.main && (
+          {currWeather && currWeather.weather.length > 0 && (
             <>
             <h3>Current Weather</h3>
-            <p>Curr Weather: {currWeather.main}</p>
+            <span>{(currWeather.weather)[0].main}</span>
+            <br></br>
+            <span>{String(convertKelvin(currWeather.temp)) + ' degrees'}</span>
             </>
           )}
         </div>
