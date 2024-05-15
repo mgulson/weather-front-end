@@ -1,4 +1,4 @@
-import { React, useState} from 'react';
+import { React, useState, useEffect} from 'react';
 import { getWeather } from '../services/getWeather'
 import Forecast from './Forecast'
 import './Home.css'
@@ -9,26 +9,42 @@ function Home() {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
 
+  async function fetchWeatherData() {
+    let response = await getWeather(city, state);
+    response = await response.json();
+    console.log(response);
+    if(response.current){
+      setCurrWeather(response.current);
+    }
+    if(response.daily && response.daily.length > 5){
+      setForecast(response.daily);
+    }
+  }
+
 
   async function handleSubmit(event) {
     event.preventDefault()
     console.log('hello')
-    let response = await getWeather(city, state)
-    response = await response.json()
-    console.log(response)
-    if(response.current){
-      setCurrWeather(response.current)
-    }
-
-    if(response.daily && response.daily.length > 5){
-      setForecast(response.daily)
-    }
+    await fetchWeatherData()
   }
 
   function convertKelvin(temp) {
     console.log(temp)
     return ((temp - 273.15) * 9/5) + 32
   }
+
+  // implement polling
+  useEffect(() => {
+    if (city && state) {
+      fetchWeatherData();
+
+      const intervalId = setInterval(() => {
+        fetchWeatherData();
+      }, 600000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [city, state]); 
 
   return (
     <>
