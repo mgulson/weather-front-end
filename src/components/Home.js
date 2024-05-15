@@ -29,10 +29,12 @@ function Home() {
   }
 
   function convertKelvin(temp) {
-    console.log(temp)
-    return ((temp - 273.15) * 9/5) + 32
+    return roundToTwo(((temp - 273.15) * 9/5) + 32)
   }
 
+  function roundToTwo(num) {
+    return Number(num.toFixed(2));
+  }
   // implement polling
   useEffect(() => {
     if (city && state) {
