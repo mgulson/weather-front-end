@@ -8,23 +8,27 @@ function Home() {
   const [forecast, setForecast] = useState(null)
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   async function fetchWeatherData() {
-    let response = await getWeather(city, state);
-    response = await response.json();
-    console.log(response);
-    if(response.current){
-      setCurrWeather(response.current);
-    }
-    if(response.daily && response.daily.length > 5){
-      setForecast(response.daily);
+    try {
+      let response = await getWeather(city, state);
+      response = await response.json();
+      if(response.current){
+        setCurrWeather(response.current);
+      }
+      if(response.daily && response.daily.length > 5){
+        setForecast(response.daily);
+      }
+    } catch(error){
+      console.log(error.message)
     }
   }
 
 
   async function handleSubmit(event) {
     event.preventDefault()
-    console.log('hello')
+    setIsSubmitted(true)
     await fetchWeatherData()
   }
 
@@ -37,16 +41,10 @@ function Home() {
   }
   // implement polling
   useEffect(() => {
-    if (city && state) {
-      fetchWeatherData();
+    const intervalId = setInterval(fetchWeatherData, 6000000);
 
-      const intervalId = setInterval(() => {
-        fetchWeatherData();
-      }, 600000);
-
-      return () => clearInterval(intervalId);
-    }
-  }, [city, state]); 
+    return () => clearInterval(intervalId);
+  }, [])
 
   return (
     <>
