@@ -2,33 +2,34 @@ import { React, useState, useEffect} from 'react';
 import { getWeather } from '../services/getWeather'
 import Forecast from './Forecast'
 import './Home.css'
+import { useQuery } from 'react-query';
+
 
 function Home() {
   const [currWeather, setCurrWeather] = useState(null)
   const [forecast, setForecast] = useState(null)
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [enabled, setEnabled] = useState(false);
+
+  const { data, error, isLoading } = useQuery(['weather', {city,state}], getWeather, {
+    enabled, refetchInterval: 600000
+  });
+
 
   async function fetchWeatherData() {
-    try {
-      let response = await getWeather(city, state);
-      response = await response.json();
-      if(response.current){
-        setCurrWeather(response.current);
-      }
-      if(response.daily && response.daily.length > 5){
-        setForecast(response.daily);
-      }
-    } catch(error){
-      console.log(error.message)
+    if(data.current){
+      setCurrWeather(data.current);
+    }
+    if(data.daily && data.daily.length > 5){
+      setForecast(data.daily);
     }
   }
 
 
   async function handleSubmit(event) {
     event.preventDefault()
-    setIsSubmitted(true)
+    setEnabled(true)
     await fetchWeatherData()
   }
 
@@ -40,11 +41,6 @@ function Home() {
     return Number(num.toFixed(2));
   }
   // implement polling
-  useEffect(() => {
-    const intervalId = setInterval(fetchWeatherData, 6000000);
-
-    return () => clearInterval(intervalId);
-  }, [])
 
   return (
     <>
