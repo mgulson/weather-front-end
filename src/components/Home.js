@@ -12,12 +12,17 @@ function Home() {
   const [state, setState] = useState('');
   const [enabled, setEnabled] = useState(false);
 
-  const { data, error, isLoading } = useQuery(['weather', {city,state}], getWeather, {
-    enabled, refetchInterval: 600000
+  useQuery(['weather', {city,state}], getWeather, {
+    enabled, refetchInterval: 600000,
+    onSuccess: (data) => {
+     setWeatherData(data)
+    },
+    onError: (error) => {
+      console.log(error)
+    }
   });
 
-
-  async function fetchWeatherData() {
+  function setWeatherData(data) {
     if(data.current){
       setCurrWeather(data.current);
     }
@@ -30,7 +35,6 @@ function Home() {
   async function handleSubmit(event) {
     event.preventDefault()
     setEnabled(true)
-    await fetchWeatherData()
   }
 
   function convertKelvin(temp) {
