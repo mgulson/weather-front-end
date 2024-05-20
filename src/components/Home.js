@@ -10,9 +10,11 @@ function Home() {
   const [forecast, setForecast] = useState(null)
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
+  const [citySubmit, setCitySubmit] = useState('');
+  const [stateSubmit, setStateSubmit] = useState('');
   const [enabled, setEnabled] = useState(false);
 
-  useQuery(['weather', {city,state}], getWeather, {
+  useQuery(['weather', {city: citySubmit, state: stateSubmit}], getWeather, {
     enabled, refetchInterval: 600000,
     onSuccess: (data) => {
      setWeatherData(data)
@@ -35,6 +37,8 @@ function Home() {
   async function handleSubmit(event) {
     event.preventDefault()
     setEnabled(true)
+    setCitySubmit(city)
+    setStateSubmit(state)
   }
 
   function convertKelvin(temp) {
